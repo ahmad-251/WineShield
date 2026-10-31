@@ -1,0 +1,4 @@
+prefix_home/
+apps/
+__pycache__/
+*.pyc
