@@ -1,0 +1,2 @@
+# WineShield sandbox layer uses only the Python standard library.
+# System tools (firejail, wine, systemd-run) are installed via install.sh.
