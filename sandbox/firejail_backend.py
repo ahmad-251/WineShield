@@ -36,7 +36,7 @@ class FirejailBackend:
                 if not getattr(profile, "private_home", None):
                     raise RuntimeError("wine_prefix requires private_home")
                 args.append(f"--env=WINEPREFIX={os.path.expanduser('~')}/{wine_prefix}")
-            if getattr(profile, "read_only", False):
+            if getattr(profile, "filesystem_isolation", False):
                 args += [
                     "--private-tmp",
                     "--private-dev",
@@ -51,6 +51,12 @@ class FirejailBackend:
                 args.append(f"--rlimit-as={parse_memory(profile.memory_limit)}")
         return prefix + args + cmd
 
-    def run(self, cmd, profile):
+    def run(self, cmd, profile ,timeout=60):
         args = self.build_command(cmd, profile)
-        return subprocess.run(args, capture_output=True, text=True)
+        try:
+            return subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired as e:
+            return subprocess.CompletedProcess( 
+                args, returncode=124,
+                stdout=e.stdout or "", stderr="Timeout: process exceeded limit",
+            )

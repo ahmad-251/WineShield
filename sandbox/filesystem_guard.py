@@ -1,8 +1,8 @@
 class FilesystemGuard:
     def __init__(self):
-        self.read_only = True
+        self.filesystem_isolation = True
 
     def get_status(self):
         return {
-            "read_only": self.read_only
+            "filesystem_isolation": self.filesystem_isolation
         }
